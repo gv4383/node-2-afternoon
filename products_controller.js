@@ -1,8 +1,9 @@
 module.exports = {
   create: (req, res, next) => {
     const dbInstance = req.app.get('db');
+    const { name, description, price, imageurl } = req.body;
 
-    dbInstance.create_products()
+    dbInstance.create_products([name, description, price, imageurl])
       .then(() => res.sendStatus(200))
       .catch(err => {
         res.status(500).send({ errorMessage: "Oops! Something went wrong. Our engineers have been informed!"});
@@ -13,7 +14,7 @@ module.exports = {
   getOne: (req, res, next) => {
     const dbInstance = req.app.get('db');
 
-    dbInstance.read_product()
+    dbInstance.read_product( req.params.id )
       .then(product => res.status(200).send(product))
       .catch(err => {
         res.status(500).send({ errorMessage: "Oops! Something went wrong. Our engineers have been informed!"});
@@ -34,19 +35,21 @@ module.exports = {
 
   update: (req, res, next) => {
     const dbInstance = req.app.get('db');
+    const { params, query } = req;
 
-    dbInstance.update_product()
+    dbInstance.update_product([params.id, query.desc])
       .then(() => res.sendStatus(200)
       .catch(err => {
         res.status(500).send({ errorMessage: "Oops! Something went wrong. Our engineers have been informed!"});
         console.log(err);
     });
   },
-  
+
   delete: (req, res, next) => {
     const dbInstance = req.app.get('db');
+    const { params } =req;
 
-    dbInstance.delete_product()
+    dbInstance.delete_product(params.id)
       .then(() => res.sendStatus(200))
       .catch(err => {
         res.status(500).send({ errorMessage: "Oops! Something went wrong. Our engineers have been informed!"});
